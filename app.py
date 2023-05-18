@@ -30,6 +30,7 @@ def webhook():
         if get_subscriber_message(viber_id) == '':
             store_subscriber_message(viber_id, message_text)
 
+    print(data['event'])
     if data['event'] == 'subscribed':
         create_subscriber(data)
 
@@ -60,6 +61,7 @@ def get_subscribers():
 
 def create_subscriber(subscriber_data):
     user_data = subscriber_data['user']
+    print(user_data)
     viber_id = user_data['id']
     #message_text = get_subscriber_message(viber_id)
 
@@ -72,6 +74,7 @@ def create_subscriber(subscriber_data):
         api_version=user_data['api_version'],
         #member_id=message_text
     )
+    print(subscriber)
 
 
     db.session.add(subscriber)
