@@ -67,7 +67,7 @@ def create_subscriber(subscriber_data, event_type):
 
     #message_text = get_subscriber_message(viber_id)
 
-    if not Subscriber.query.filter_by(viber_id=viber_id).first().exists():
+    if Subscriber.query.filter_by(viber_id=viber_id).first() is None:
         subscriber = Subscriber(
             viber_id=viber_id,
             name=user_data['name'],
