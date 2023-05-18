@@ -6,7 +6,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://sqcovnamegkmuj:7b7e1659193
 db = SQLAlchemy(app)
 
 class Subscriber(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, server_default=db.text("nextval('subscriber_id_seq'::regclass)"))
     viber_id = db.Column(db.Text, nullable=False)
     name = db.Column(db.Text)
     avatar = db.Column(db.Text)
