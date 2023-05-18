@@ -37,7 +37,7 @@ def webhook():
 
 @app.route('/subscribers', methods=['GET'])
 def get_subscribers():
-    subscribers = Subscriber.query.all()
+    subscribers = db.session.query(Subscriber).all()
     subscriber_list = []
 
     for subscriber in subscribers:
@@ -58,17 +58,29 @@ def get_subscribers():
 def create_subscriber(subscriber_data):
     if subscriber_data['event'] == 'subscribed':
         viber_id = subscriber_data['user']['id']
-        message_text = get_subscriber_message(viber_id)
+        try:
+            message_text = get_subscriber_message(viber_id)
 
-        subscriber = Subscriber(
-            viber_id=viber_id,
-            name=subscriber_data['user']['name'],
-            avatar=subscriber_data['user']['avatar'],
-            country=subscriber_data['user']['country'],
-            language=subscriber_data['user']['language'],
-            api_version=subscriber_data['user']['api_version'],
-            member_id=message_text
-        )
+            subscriber = Subscriber(
+                viber_id=viber_id,
+                name=subscriber_data['user']['name'],
+                avatar=subscriber_data['user']['avatar'],
+                country=subscriber_data['user']['country'],
+                language=subscriber_data['user']['language'],
+                api_version=subscriber_data['user']['api_version'],
+                member_id=message_text
+            )
+        except Exception:
+            subscriber = Subscriber(
+                viber_id=viber_id,
+                name=subscriber_data['user']['name'],
+                avatar=subscriber_data['user']['avatar'],
+                country=subscriber_data['user']['country'],
+                language=subscriber_data['user']['language'],
+                api_version=subscriber_data['user']['api_version'],
+                member_id="1"
+            )
+
         db.session.add(subscriber)
         db.session.commit()
 
