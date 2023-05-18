@@ -1,4 +1,4 @@
 Flask==2.0.1
 gunicorn==20.1.0
-flask_sqlalchemy == 23.1.2
-sqlalchemy == 23.1.2
+Flask_SQLAlchemy
+SQLAlchemy==1.4.23
