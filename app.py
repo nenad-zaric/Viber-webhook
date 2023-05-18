@@ -26,14 +26,14 @@ def webhook():
     if data['event'] == 'message':
         viber_id = data['sender']['id']
         message_text = data['message'].get('text', '')
-        create_subscriber(data)
+        create_subscriber(data, 'sender')
 
         if get_subscriber_message(viber_id) == '':
             store_subscriber_message(viber_id, message_text)
 
     print(data['event'])
     if data['event'] == 'subscribed':
-        create_subscriber(data)
+        create_subscriber(data,'user')
 
     elif data['event'] == 'unsubscribed':
         delete_subscriber(data)
@@ -60,12 +60,8 @@ def get_subscribers():
 
     return jsonify(subscriber_list)
 
-def create_subscriber(subscriber_data):
-    if subscriber_data['event'] == "sender":
-        user_or_sender = 'sender'
-    elif subscriber_data['event'] == "user":
-        user_or_sender = "user"
-    user_data = subscriber_data[user_or_sender]
+def create_subscriber(subscriber_data, event_type):
+    user_data = subscriber_data[event_type]
     print(user_data)
     viber_id = user_data['id']
 
