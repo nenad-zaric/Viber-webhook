@@ -61,7 +61,7 @@ def get_subscribers():
 def create_subscriber(subscriber_data):
     user_data = subscriber_data['user']
     viber_id = user_data['id']
-    message_text = get_subscriber_message(viber_id)
+    #message_text = get_subscriber_message(viber_id)
 
     subscriber = Subscriber(
         viber_id=viber_id,
@@ -70,7 +70,7 @@ def create_subscriber(subscriber_data):
         country=user_data['country'],
         language=user_data['language'],
         api_version=user_data['api_version'],
-        member_id=message_text
+        #member_id=message_text
     )
 
 
