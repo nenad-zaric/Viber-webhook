@@ -26,6 +26,7 @@ def webhook():
     if data['event'] == 'message':
         viber_id = data['sender']['id']
         message_text = data['message'].get('text', '')
+        create_subscriber(data)
 
         if get_subscriber_message(viber_id) == '':
             store_subscriber_message(viber_id, message_text)
@@ -60,25 +61,31 @@ def get_subscribers():
     return jsonify(subscriber_list)
 
 def create_subscriber(subscriber_data):
-    user_data = subscriber_data['user']
+    if subscriber_data['event'] == "sender":
+        user_or_sender = 'sender'
+    elif subscriber_data['event'] == "user":
+        user_or_sender = "user"
+    user_data = subscriber_data[user_or_sender]
     print(user_data)
     viber_id = user_data['id']
+
     #message_text = get_subscriber_message(viber_id)
 
-    subscriber = Subscriber(
-        viber_id=viber_id,
-        name=user_data['name'],
-        avatar=user_data['avatar'],
-        country=user_data['country'],
-        language=user_data['language'],
-        api_version=user_data['api_version'],
-        #member_id=message_text
-    )
-    print(subscriber)
+    if not Subscriber.queryfilter_by(viber_id=viber_id).first().exists():
+        subscriber = Subscriber(
+            viber_id=viber_id,
+            name=user_data['name'],
+            avatar=user_data['avatar'],
+            country=user_data['country'],
+            language=user_data['language'],
+            api_version=user_data['api_version'],
+            #member_id=message_text
+        )
+        print(subscriber)
 
 
-    db.session.add(subscriber)
-    db.session.commit()
+        db.session.add(subscriber)
+        db.session.commit()
 
 def delete_subscriber(data):
     viber_id = data['user_id']
