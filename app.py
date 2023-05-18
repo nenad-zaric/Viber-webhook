@@ -13,7 +13,7 @@ class Subscriber(db.Model):
     country = db.Column(db.Text)
     language = db.Column(db.Text)
     api_version = db.Column(db.Integer)
-    member_id = db.Column(db.Text)
+    phone_number = db.Column(db.Text)
 
 class SubscriberMessage(db.Model):
     viber_id = db.Column(db.Text, primary_key=True)
