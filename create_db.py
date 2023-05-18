@@ -8,7 +8,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 class Subscriber(db.Model):
-    id = db.Column(db.Integer, primary_key=True, server_default=db.text("nextval('subscriber_id_seq'::regclass)"))
+    id = db.Column(db.Integer, primary_key=True,)
     viber_id = db.Column(db.Text, nullable=False)
     name = db.Column(db.Text)
     avatar = db.Column(db.Text)
