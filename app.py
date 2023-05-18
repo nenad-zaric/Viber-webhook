@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://<username>:<password>@<host>:<port>/<database_name>'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://<sqcovnamegkmuj>:<7b7e16591935aa6b49d3c8735cd9db36aba0904359a4d7fa69c7b17894668406>@<ec2-3-217-146-37.compute-1.amazonaws.com>:<5432>/<dabcmiilq6u3t6>'
 db = SQLAlchemy(app)
 
 class Subscriber(db.Model):
