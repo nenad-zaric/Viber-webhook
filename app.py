@@ -112,8 +112,15 @@ def send_welcome_message(viber_id):
     headers = {"Content-Type": "application/json",
                "X-Viber-Auth-Token": authenticationToken}
     data = {
-        "viber_id": viber_id,
-        "message": welcome_message
+        "receiver": viber_id,
+        "min_api_version":1,
+        "sender":{
+            "name":"Order of the Dragon",
+            "avatar":None
+         },
+        "tracking_data":"tracking data",
+        "type":"text",
+        "text": welcome_message
     }
 
     response = requests.post(api_endpoint, json=data, headers=headers)
