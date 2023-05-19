@@ -106,8 +106,8 @@ def send_welcome_message(viber_id):
                "X-Viber-Auth-Token": authenticationToken}
     
 
-    image_url = "https://www.dropbox.com/s/4ahtngajlm51l51/tegovi.png?dl=0"
-    thumbnail_url = "https://www.dropbox.com/s/20is2zfs1skb4wt/tegovi_thumbnail%20%28Custom%29%20%28Custom%29.jpg?dl=0"
+    image_url = "https://i.postimg.cc/GmdDqvyx/tegovi.png"
+    thumbnail_url = "https://i.postimg.cc/wv0LmMvQ/tegovi-thumbnaill.jpg"
 
     data = {
         "receiver": viber_id,
