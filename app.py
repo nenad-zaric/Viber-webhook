@@ -59,11 +59,11 @@ def create_subscriber(subscriber_data):
     if subscriber is None:
         subscriber = Subscriber(
             viber_id=user_data['id'],
-            name=user_data['name'],
-            avatar=user_data['avatar'],
-            country=user_data['country'],
-            language=user_data['language'],
-            api_version=user_data['api_version'],
+            name=user_data.get('name'),
+            avatar=user_data.get('avatar'),
+            country=user_data.get('country'),
+            language=user_data.get('language'),
+            api_version=user_data.get('api_version'),
             phone_number=get_subscriber_phone_number(message_data)
         )
         send_welcome_message(subscriber.viber_id)
