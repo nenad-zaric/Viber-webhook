@@ -66,6 +66,7 @@ def create_subscriber(subscriber_data):
             api_version=user_data['api_version'],
             phone_number=get_subscriber_phone_number(message_data)
         )
+        send_welcome_message(subscriber.viber_id)
     else:
         phone_number = get_subscriber_phone_number(message_data)
         if phone_number is not None:
