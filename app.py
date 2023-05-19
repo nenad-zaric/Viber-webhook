@@ -121,7 +121,8 @@ def send_welcome_message(viber_id):
         "tracking_data":"tracking data",
         "type":"picture",
         "media":image_url,
-        "text": welcome_message
+        "text": welcome_message,
+        "thumbnail":welcome_message
     }
 
     response = requests.post(api_endpoint, json=data, headers=headers)
