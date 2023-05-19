@@ -1,8 +1,11 @@
 import re
 
-def is_phone_number(string):
+def is_valid_number(string):
     pattern = r'^(\+381|0)[67]\d{8,9}$'
-    return bool(re.match(pattern, string))
+    try:
+        return bool(re.match(pattern, string))
+    except:
+        return False
 
 
 def extract_phone_number(text):
