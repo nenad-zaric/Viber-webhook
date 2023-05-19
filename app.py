@@ -62,9 +62,9 @@ def get_subscribers():
 def create_subscriber(subscriber_data):
     user_data = subscriber_data['sender']
     message_data = subscriber_data['message']
-
+    subscriber = Subscriber.query.filter_by(viber_id=user_data['id']).first()
     #creates new subscriber if it doesnt exist
-    if Subscriber.query.filter_by(viber_id=user_data['id']).first() is None:
+    if subscriber is None:
         subscriber = Subscriber(
             viber_id=user_data['id'],
             name=user_data['name'],
@@ -75,10 +75,15 @@ def create_subscriber(subscriber_data):
             phone_number=get_subscriber_phone_number(message_data)
         )
         print(subscriber)
+    else:
+        phone_number = get_subscriber_phone_number(message_data)
+        if phone_number is not None:
+            subscriber.phone_number = phone_number
 
 
-        db.session.add(subscriber)
-        db.session.commit()
+    db.session.add(subscriber)
+    db.session.commit()
+
 
 def delete_subscriber(data):
     viber_id = data['user_id']
@@ -100,15 +105,13 @@ def get_subscriber_message(viber_id):
 
 def get_subscriber_phone_number(data):
     text = data.get('text', '')
-    text = phone_number_utils.clean_number(text)
+    text = phone_number_utils.extract_phone_number(text)
 
     if(phone_number_utils.is_phone_number(text)):
         return text
     else:
-        return ""
+        return None
     
-
-
 
 def store_subscriber_message(viber_id, message_text):
     subscriber_message = SubscriberMessage(viber_id=viber_id, message=message_text)
