@@ -105,11 +105,10 @@ def send_welcome_message(viber_id):
     headers = {"Content-Type": "application/json",
                "X-Viber-Auth-Token": authenticationToken}
     
-     # Get the Heroku server URL
-    heroku_server_url = os.environ.get("HEROKU_SERVER_URL", "")
 
     # Construct the image URL using the Heroku server URL and the relative path to the image
-    image_url = f"{heroku_server_url}/img/tegovi.png"  # Replace "/img/tegovi.png" with the actual relative path
+    image_url = "https://www.dropbox.com/s/4ahtngajlm51l51/tegovi.png?dl=0"
+    thumbnail_url = "https://www.dropbox.com/s/20is2zfs1skb4wt/tegovi_thumbnail%20%28Custom%29%20%28Custom%29.jpg?dl=0"
 
     data = {
         "receiver": viber_id,
