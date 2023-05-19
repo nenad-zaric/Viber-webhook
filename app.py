@@ -22,7 +22,7 @@ class Subscriber(db.Model):
 @app.route('/webhook', methods=['POST'])
 def webhook():
     data = request.json
-    print(data['event'])
+    print("Event type: "+data['event'])
     if data['event'] == 'message':
         create_subscriber(data)
 

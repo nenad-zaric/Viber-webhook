@@ -1,7 +1,7 @@
 import re
 
 def is_valid_number(string):
-    pattern = r'^(\+381|0)[67]\d{8,9}$'
+    pattern = r'^(\+381|0)[67]\d{7,8}$'
     try:
         return bool(re.match(pattern, string))
     except:
