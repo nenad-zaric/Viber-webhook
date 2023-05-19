@@ -16,23 +16,13 @@ class Subscriber(db.Model):
     api_version = db.Column(db.Integer)
     phone_number = db.Column(db.Text)
 
-class SubscriberMessage(db.Model):
-    viber_id = db.Column(db.Text, primary_key=True)
-    message = db.Column(db.Text)
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
     data = request.json
 
     if data['event'] == 'message':
-        viber_id = data['sender']['id']
-        message_text = data['message'].get('text', '')
         create_subscriber(data)
-
-        if get_subscriber_message(viber_id) == '':
-            store_subscriber_message(viber_id, message_text)
-
-    print(data['event'])
 
     if data['event'] == 'unsubscribed':
         delete_subscriber(data)
@@ -41,7 +31,7 @@ def webhook():
 
 @app.route('/subscribers', methods=['GET'])
 def get_subscribers():
-    subscribers = db.session.query(Subscriber).all()
+    subscribers = Subscriber.query.all()
     subscriber_list = []
 
     for subscriber in subscribers:
@@ -63,6 +53,7 @@ def create_subscriber(subscriber_data):
     user_data = subscriber_data['sender']
     message_data = subscriber_data['message']
     subscriber = Subscriber.query.filter_by(viber_id=user_data['id']).first()
+
     #creates new subscriber if it doesnt exist
     if subscriber is None:
         subscriber = Subscriber(
@@ -74,7 +65,6 @@ def create_subscriber(subscriber_data):
             api_version=user_data['api_version'],
             phone_number=get_subscriber_phone_number(message_data)
         )
-        print(subscriber)
     else:
         phone_number = get_subscriber_phone_number(message_data)
         if phone_number is not None:
@@ -88,35 +78,22 @@ def create_subscriber(subscriber_data):
 def delete_subscriber(data):
     viber_id = data['user_id']
     subscriber = Subscriber.query.filter_by(viber_id=viber_id).first()
-    subscriber_message = SubscriberMessage.query.filter_by(viber_id=viber_id).first()
 
     if subscriber:
         db.session.delete(subscriber)
-    if subscriber_message:
-        db.session.delete(subscriber_message)
 
     db.session.commit()
 
-def get_subscriber_message(viber_id):
-    subscriber_message = SubscriberMessage.query.filter_by(viber_id=viber_id).first()
-    if subscriber_message:
-        return subscriber_message.message
-    return ''
 
 def get_subscriber_phone_number(data):
     text = data.get('text', '')
     text = phone_number_utils.extract_phone_number(text)
 
-    if(phone_number_utils.is_phone_number(text)):
+    if phone_number_utils.is_valid_number(text):
         return text
     else:
         return None
     
-
-def store_subscriber_message(viber_id, message_text):
-    subscriber_message = SubscriberMessage(viber_id=viber_id, message=message_text)
-    db.session.add(subscriber_message)
-    db.session.commit()
 
 if __name__ == '__main__':
     app.run()

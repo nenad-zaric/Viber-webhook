@@ -17,10 +17,6 @@ class Subscriber(db.Model):
     api_version = db.Column(db.Integer)
     phone_number = db.Column(db.Text)
 
-class SubscriberMessage(db.Model):
-    viber_id = db.Column(db.Text, primary_key=True)
-    message = db.Column(db.Text)
-
 # Create the database tables
 with app.app_context():
     db.create_all()
