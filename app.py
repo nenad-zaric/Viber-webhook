@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+import phone_number_utils
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://sqcovnamegkmuj:7b7e16591935aa6b49d3c8735cd9db36aba0904359a4d7fa69c7b17894668406@ec2-3-217-146-37.compute-1.amazonaws.com:5432/dabcmiilq6u3t6'
@@ -26,16 +27,14 @@ def webhook():
     if data['event'] == 'message':
         viber_id = data['sender']['id']
         message_text = data['message'].get('text', '')
-        create_subscriber(data, 'sender')
+        create_subscriber(data)
 
         if get_subscriber_message(viber_id) == '':
             store_subscriber_message(viber_id, message_text)
 
     print(data['event'])
-    if data['event'] == 'subscribed':
-        create_subscriber(data,'user')
 
-    elif data['event'] == 'unsubscribed':
+    if data['event'] == 'unsubscribed':
         delete_subscriber(data)
 
     return '', 200
@@ -54,28 +53,26 @@ def get_subscribers():
             'country': subscriber.country,
             'language': subscriber.language,
             'api_version': subscriber.api_version,
-            'member_id': subscriber.member_id
+            'phone_number': subscriber.phone_number
         }
         subscriber_list.append(subscriber_data)
 
     return jsonify(subscriber_list)
 
-def create_subscriber(subscriber_data, event_type):
-    user_data = subscriber_data[event_type]
-    print(user_data)
-    viber_id = user_data['id']
+def create_subscriber(subscriber_data):
+    user_data = subscriber_data['sender']
+    message_data = subscriber_data['message']
 
-    #message_text = get_subscriber_message(viber_id)
-
-    if Subscriber.query.filter_by(viber_id=viber_id).first() is None:
+    #creates new subscriber if it doesnt exist
+    if Subscriber.query.filter_by(viber_id=user_data['id']).first() is None:
         subscriber = Subscriber(
-            viber_id=viber_id,
+            viber_id=user_data['id'],
             name=user_data['name'],
             avatar=user_data['avatar'],
             country=user_data['country'],
             language=user_data['language'],
             api_version=user_data['api_version'],
-            #member_id=message_text
+            phone_number=get_subscriber_phone_number(message_data)
         )
         print(subscriber)
 
@@ -100,6 +97,18 @@ def get_subscriber_message(viber_id):
     if subscriber_message:
         return subscriber_message.message
     return ''
+
+def get_subscriber_phone_number(data):
+    text = data.get('text', '')
+    text = phone_number_utils.clean_number(text)
+
+    if(phone_number_utils.is_phone_number(text)):
+        return text
+    else:
+        return ""
+    
+
+
 
 def store_subscriber_message(viber_id, message_text):
     subscriber_message = SubscriberMessage(viber_id=viber_id, message=message_text)
