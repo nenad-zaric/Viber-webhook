@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import phone_number_utils
 import requests
+import os
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://sqcovnamegkmuj:7b7e16591935aa6b49d3c8735cd9db36aba0904359a4d7fa69c7b17894668406@ec2-3-217-146-37.compute-1.amazonaws.com:5432/dabcmiilq6u3t6'
@@ -97,20 +98,19 @@ def get_subscriber_phone_number(data):
         return None
 
 def send_welcome_message(viber_id):
-    welcome_message = '''Добродошли у теретану Ред Змаја!
-
-                        Са нама можете постићи све своје фитнес циљеве. Наш тим стручњака стоји вам на располагању да вам помогне у сваком кораку.
-
-                        Започните своју фитнес авантуру и осећајте се снажно, здраво и пуног енергије.
-
-                        Желимо вам успех у сваком тренингу и надамо се да ћете уживати у сваком тренутку у теретани Ред Змаја!
-
-                        Срећан тренинг! 🐉💪'''
+    welcome_message = '''Добродошли у теретану Ред Змаја!\n''' + '''Са нама можете постићи све своје фитнес циљеве. Наш тим стручњака стоји вам на располагању да вам помогне у сваком кораку.\n''' +'''Започните своју фитнес авантуру и осећајте се снажно, здраво и пуног енергије.''' +'''Желимо вам успех у сваком тренингу и надамо се да ћете уживати у сваком тренутку у теретани Ред Змаја!\n\n'''+'''Срећан тренинг! 🐉💪'''
 
     authenticationToken = "510a36516c67e493-ab4405fbe63d2564-a30c241fd43964a0"
     api_endpoint = "https://chatapi.viber.com/pa/send_message"
     headers = {"Content-Type": "application/json",
                "X-Viber-Auth-Token": authenticationToken}
+    
+     # Get the Heroku server URL
+    heroku_server_url = os.environ.get("HEROKU_SERVER_URL", "")
+
+    # Construct the image URL using the Heroku server URL and the relative path to the image
+    image_url = f"{heroku_server_url}/img/tegovi.png"  # Replace "/img/tegovi.png" with the actual relative path
+
     data = {
         "receiver": viber_id,
         "min_api_version":1,
@@ -119,7 +119,8 @@ def send_welcome_message(viber_id):
             "avatar":None
          },
         "tracking_data":"tracking data",
-        "type":"text",
+        "type":"picture",
+        "media":image_url,
         "text": welcome_message
     }
 
