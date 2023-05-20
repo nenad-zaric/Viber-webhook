@@ -8,12 +8,18 @@ def is_valid_number(string):
         return False
 
 
-def extract_phone_number(text):
-    # Remove non-digit characters from the text
-    cleaned_text = re.sub(r'\D', '', text)
+def extract_phone_number(string):
+    # Remove any non-digit characters except '+'
+    cleaned_string = re.sub(r'[^+\d]|(?<=\+)\+', '', string)
 
-    # Check if the cleaned text matches the phone number pattern
-    if re.match(r'^(\+)?\d{10,15}$', cleaned_text):
-        return cleaned_text
+    # Check if the cleaned string matches the phone number pattern
+    if re.match(r'^\+?\d{9,15}$', cleaned_string):
+        return cleaned_string
 
     return None
+
+
+def to_local_format(text):
+    if text.startswith("+381"):
+        text = "0" + text[4:]
+        return text
