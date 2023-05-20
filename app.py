@@ -37,6 +37,7 @@ def webhook():
             "type":"text",
             'message': 'Пошаљите свој број телефона како би се пријавили на наш сервис'
         }
+        print('Trebalo bi da posalje')
         return json.dumps(response), 200, {'Content-Type': 'application/json'}
 
     if data['event'] == 'unsubscribed':
