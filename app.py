@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import phone_number_utils
 import requests
+import json
 import vokativi
 
 app = Flask(__name__)
@@ -25,6 +26,18 @@ def webhook():
     print("Event type: "+data['event'])
     if data['event'] == 'message':
         create_subscriber(data)
+
+    if data['event'] == 'conversation_started':
+        response = {
+            "sender":{
+                "name":"Order of the Dragon",
+                "avatar":None
+            },
+            'tracking_data': 'tracking data',
+            "type":"text",
+            'message': 'Пошаљите свој број телефона како би се пријавили на наш сервис'
+        }
+        return json.dumps(response), 200, {'Content-Type': 'application/json'}
 
     if data['event'] == 'unsubscribed':
         delete_subscriber(data)
@@ -131,6 +144,30 @@ def send_welcome_message(viber_id, name):
     else:
         print("Failed to send welcome message")
 
+def send_message(viber_id, message):
+    authenticationToken = "510a36516c67e493-ab4405fbe63d2564-a30c241fd43964a0"
+    api_endpoint = "https://chatapi.viber.com/pa/send_message"
+    headers = {"Content-Type": "application/json",
+               "X-Viber-Auth-Token": authenticationToken}
+
+    data = {
+        "receiver": viber_id,
+        "min_api_version":1,
+        "sender":{
+            "name":"Order of the Dragon",
+            "avatar":None
+         },
+        "tracking_data":"tracking data",
+        "type":"picture",
+        "text": message,
+    }
+
+    response = requests.post(api_endpoint, json=data, headers=headers)
+
+    if response.status_code == 200:
+        print("Welcome message sent successfully")
+    else:
+        print("Failed to send welcome message")
 
 if __name__ == '__main__':
     app.run()
