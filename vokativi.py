@@ -27,7 +27,7 @@ vokativi = {
     'Aco': 'Aco',
     'Andrijana': 'Andrijana',
     'Andrija': 'Andrija',
-    'Anđa': 'Anđa',
+    'Anđa': 'Anđo',
     'Bane': 'Bane',
     'Borivoje': 'Borivoje',
     'Biljana': 'Biljana',
