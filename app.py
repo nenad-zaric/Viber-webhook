@@ -4,10 +4,11 @@ import phone_number_utils
 import requests
 import json
 import vokativi
+import os
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://sqcovnamegkmuj:7b7e16591935aa6b49d3c8735cd9db36aba0904359a4d7fa69c7b17894668406@ec2-3-217-146-37.compute-1.amazonaws.com:5432/dabcmiilq6u3t6'
-db = SQLAlchemy(app)
+application = Flask(__name__)
+application.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+db = SQLAlchemy(application)
 
 class Subscriber(db.Model):
     id = db.Column(db.Integer, primary_key=True, server_default=db.text("nextval('subscriber_id_seq'::regclass)"))
@@ -20,7 +21,7 @@ class Subscriber(db.Model):
     phone_number = db.Column(db.Text)
 
 
-@app.route('/webhook', methods=['POST'])
+@application.route('/webhook', methods=['POST'])
 def webhook():
     data = request.json
     print("Event type: "+data['event'])
@@ -45,7 +46,7 @@ def webhook():
 
     return '', 200
 
-@app.route('/subscribers', methods=['GET'])
+@application.route('/subscribers', methods=['GET'])
 def get_subscribers():
     subscribers = Subscriber.query.all()
     subscriber_list = []
@@ -171,4 +172,4 @@ def send_message(viber_id, message):
         print("Failed to send welcome message")
 
 if __name__ == '__main__':
-    app.run()
+    application.run()

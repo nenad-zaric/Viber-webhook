@@ -1,11 +1,13 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+import os
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://sqcovnamegkmuj:7b7e16591935aa6b49d3c8735cd9db36aba0904359a4d7fa69c7b17894668406@ec2-3-217-146-37.compute-1.amazonaws.com:5432/dabcmiilq6u3t6'
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+
+application = Flask(__name__)
+application.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+db = SQLAlchemy(application)
+migrate = Migrate(application, db)
 
 class Subscriber(db.Model):
     id = db.Column(db.Integer, primary_key=True,)
@@ -18,5 +20,5 @@ class Subscriber(db.Model):
     phone_number = db.Column(db.Text)
 
 # Create the database tables
-with app.app_context():
+with application.app_context():
     db.create_all()
